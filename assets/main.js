@@ -312,7 +312,7 @@ const WORKS = [
   { name: "ภาษีแม่ค้า · PDF Tools ไทย (แอปมือถือ)", theme: "it", make: phone, href: "#works" },
   { name: "AetherReel Studio · วิดีโอ AI", theme: "it", make: clapper, href: "#works" },
   { name: "ED GAMER · ช่องเกม", theme: "game", make: gamepad, href: "https://www.youtube.com/@ED._GAMER-SP" },
-  { name: "เกม RPG หอคอย 50 ชั้น · กำลังพัฒนา", theme: "game", make: meru, href: "#works" },
+  { name: "เกมที่กำลังพัฒนา", theme: "game", make: meru, href: "#works" },
   { name: "นกฮูก STORY & MUSIC · ไลฟ์เพลง", theme: "music", make: headphones, href: "https://www.youtube.com/@Owl_STORY-MUSIC/streams" },
   { name: "นกฮูก STORY & MUSIC · เพลงแต่งเอง", theme: "music", make: musicNote, href: "https://www.youtube.com/@Owl_STORY-MUSIC/videos" },
 ];
