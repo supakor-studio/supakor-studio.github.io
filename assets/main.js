@@ -199,6 +199,31 @@ function musicNote() {
   return g;
 }
 
+function tower() {
+  const g = new THREE.Group();
+  const stone = mat(0x3a3150, { roughness: 0.6 });
+  const trim = mat(THEME.game, glow(THEME.game, 0.7));
+  [[0.34, 0.42, 0.5, -0.45], [0.28, 0.34, 0.45, 0.02], [0.22, 0.28, 0.4, 0.44]].forEach(([top, bottom, h, y]) => {
+    const tier = new THREE.Mesh(new THREE.CylinderGeometry(top, bottom, h, 8), stone);
+    tier.position.y = y;
+    g.add(tier);
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(top + 0.01, 0.025, 8, 24), trim);
+    ring.rotation.x = Math.PI / 2;
+    ring.position.y = y + h / 2;
+    g.add(ring);
+  });
+  const roof = new THREE.Mesh(new THREE.ConeGeometry(0.28, 0.4, 8), mat(THEME.music, { metalness: 0.7, ...glow(THEME.music, 0.3) }));
+  roof.position.y = 0.84;
+  g.add(roof);
+  const win = mat(0xffd27a, glow(0xffd27a, 0.9));
+  for (const y of [-0.4, 0.05, 0.47]) {
+    const w = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.12, 0.02), win);
+    w.position.set(0, y, 0.3 - (y + 0.4) * 0.12);
+    g.add(w);
+  }
+  return g;
+}
+
 // What orbits, and where a click goes. `theme` colours the object's glow when pointed at.
 const WORKS = [
   { name: "DocDee PDF · โปรแกรม PDF ภาษาไทย", theme: "it", make: pdfDocument, href: "#docdee" },
@@ -206,6 +231,7 @@ const WORKS = [
   { name: "ภาษีแม่ค้า · PDF Tools ไทย (แอปมือถือ)", theme: "it", make: phone, href: "#works" },
   { name: "AetherReel Studio · วิดีโอ AI", theme: "it", make: clapper, href: "#works" },
   { name: "ED GAMER · ช่องเกม", theme: "game", make: gamepad, href: "https://www.youtube.com/@ED._GAMER-SP" },
+  { name: "เกม RPG หอคอย 50 ชั้น · กำลังพัฒนา", theme: "game", make: tower, href: "#works" },
   { name: "นกฮูก STORY & MUSIC · ไลฟ์เพลง", theme: "music", make: headphones, href: "https://www.youtube.com/@Owl_STORY-MUSIC/streams" },
   { name: "นกฮูก STORY & MUSIC · เพลงแต่งเอง", theme: "music", make: musicNote, href: "https://www.youtube.com/@Owl_STORY-MUSIC/videos" },
 ];
