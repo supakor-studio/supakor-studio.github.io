@@ -12,7 +12,7 @@
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="stylesheet" href="assets/style.css">
   <script type="importmap">
-    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
   </script>
   <script src="assets/site.js" defer></script>
   <script type="module" src="assets/main.js"></script>
@@ -34,19 +34,20 @@
     <section class="hero3d" aria-label="แนะนำ Supakor.Studio">
       <div class="fallback"></div>
       <canvas id="scene" aria-hidden="true"></canvas>
+      <div id="orbit-label" aria-hidden="true"></div>
       <div class="content">
         <div class="glass">
           <img class="logo" src="assets/logo.png" alt="Supakor.Studio" width="600" height="347">
           <h1>สตูดิโอสร้างสรรค์<br><span class="grad">ของคนไทย</span></h1>
           <p class="lead">เราทำซอฟต์แวร์ฟรีที่ใช้ภาษาไทยได้เต็มที่ แต่งเพลง และทำคอนเทนต์เกม — ทุกอย่างด้วยใจ จากคนไทยเพื่อคนไทย</p>
-          <div class="tags"><span class="tag">💻 ซอฟต์แวร์</span><span class="tag">🎵 เพลง</span><span class="tag">🎮 เกม</span><span class="tag">✨ AI</span></div>
+          <div class="tags"><span class="tag it">💻 IT &amp; ซอฟต์แวร์</span><span class="tag game">🎮 Gamer</span><span class="tag music">🎵 เพลง</span></div>
           <div class="btns">
             <a class="btn primary" href="#docdee">รู้จัก DocDee PDF</a>
             <a class="btn ghost" href="#music">ฟังเพลงของเรา</a>
           </div>
         </div>
       </div>
-      <div class="scroll-hint" aria-hidden="true">เลื่อนลง ↓</div>
+      <div class="scroll-hint" aria-hidden="true">ชี้ที่วัตถุที่ลอยอยู่เพื่อดูผลงาน · เลื่อนลง ↓</div>
     </section>
 
     <section id="works">
