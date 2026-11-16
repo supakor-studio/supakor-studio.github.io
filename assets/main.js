@@ -200,27 +200,61 @@ function musicNote() {
 }
 
 function tower() {
+  // A fantasy castle tower: a wide stone base, stacked floors, battlements, a short spire and a flag.
   const g = new THREE.Group();
-  const stone = mat(0x3a3150, { roughness: 0.6 });
-  const trim = mat(THEME.game, glow(THEME.game, 0.7));
-  [[0.34, 0.42, 0.5, -0.45], [0.28, 0.34, 0.45, 0.02], [0.22, 0.28, 0.4, 0.44]].forEach(([top, bottom, h, y]) => {
-    const tier = new THREE.Mesh(new THREE.CylinderGeometry(top, bottom, h, 8), stone);
-    tier.position.y = y;
-    g.add(tier);
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(top + 0.01, 0.025, 8, 24), trim);
-    ring.rotation.x = Math.PI / 2;
-    ring.position.y = y + h / 2;
-    g.add(ring);
-  });
-  const roof = new THREE.Mesh(new THREE.ConeGeometry(0.28, 0.4, 8), mat(THEME.music, { metalness: 0.7, ...glow(THEME.music, 0.3) }));
-  roof.position.y = 0.84;
-  g.add(roof);
-  const win = mat(0xffd27a, glow(0xffd27a, 0.9));
-  for (const y of [-0.4, 0.05, 0.47]) {
-    const w = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.12, 0.02), win);
-    w.position.set(0, y, 0.3 - (y + 0.4) * 0.12);
-    g.add(w);
+  const stone = mat(0x5a5470, { roughness: 0.75, metalness: 0.05 });
+  const dark = mat(0x3b3550, { roughness: 0.8 });
+  const trim = mat(THEME.game, glow(THEME.game, 0.6));
+  const win = mat(0xffd27a, glow(0xffd27a, 1.0));
+  // Floors: slightly narrower as they rise, each with a glowing purple band.
+  const floors = [[0.46, -0.62, 0.34], [0.42, -0.28, 0.34], [0.38, 0.06, 0.34]];
+  for (const [r, y, h] of floors) {
+    const f = new THREE.Mesh(new THREE.CylinderGeometry(r - 0.02, r, h, 16), stone);
+    f.position.y = y;
+    g.add(f);
+    const band = new THREE.Mesh(new THREE.TorusGeometry(r - 0.01, 0.022, 8, 32), trim);
+    band.rotation.x = Math.PI / 2;
+    band.position.y = y + h / 2;
+    g.add(band);
+    // Lit windows around each floor.
+    for (let k = 0; k < 4; k++) {
+      const a = (k / 4) * Math.PI * 2 + (y > 0 ? 0.4 : 0);
+      const w = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.12, 0.03), win);
+      w.position.set(Math.sin(a) * (r - 0.005), y + 0.02, Math.cos(a) * (r - 0.005));
+      w.rotation.y = a;
+      g.add(w);
+    }
   }
+  // Arched door at the base.
+  const door = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.04, 16, 1, false, 0, Math.PI), dark);
+  door.rotation.set(Math.PI / 2, 0, 0);
+  door.position.set(0, -0.68, 0.46);
+  g.add(door);
+  const doorLow = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.12, 0.04), dark);
+  doorLow.position.set(0, -0.74, 0.46);
+  g.add(doorLow);
+  // Battlements: a wider top ring with merlons.
+  const top = new THREE.Mesh(new THREE.CylinderGeometry(0.46, 0.38, 0.1, 16), stone);
+  top.position.y = 0.28;
+  g.add(top);
+  for (let k = 0; k < 10; k++) {
+    const a = (k / 10) * Math.PI * 2;
+    const m = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.12, 0.09), stone);
+    m.position.set(Math.sin(a) * 0.42, 0.39, Math.cos(a) * 0.42);
+    m.rotation.y = a;
+    g.add(m);
+  }
+  // A short spire and a flag.
+  const spire = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.42, 16), mat(THEME.game, { roughness: 0.4, ...glow(THEME.game, 0.25) }));
+  spire.position.y = 0.55;
+  g.add(spire);
+  const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.3, 6), mat(0xdddddd, { metalness: 0.8 }));
+  pole.position.y = 0.9;
+  g.add(pole);
+  const flag = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.12), new THREE.MeshStandardMaterial({ color: THEME.music, side: THREE.DoubleSide, ...glow(THEME.music, 0.4) }));
+  flag.position.set(0.1, 0.99, 0);
+  g.add(flag);
+  g.scale.setScalar(1.05);
   return g;
 }
 
