@@ -199,62 +199,109 @@ function musicNote() {
   return g;
 }
 
-function tower() {
-  // A fantasy castle tower: a wide stone base, stacked floors, battlements, a short spire and a flag.
+function meru() {
+  // Mount Meru as the Traiphum tells it: a stepped square mountain whose four faces are silver
+  // (east), crystal (west), sapphire-green (south) and gold (north), the Tavatimsa palace on its
+  // peak, the sun and moon circling it, standing on the three rocks (Trikut) in the Sithandon
+  // ocean ringed by the seven ranges (Sattaboriphan), with the fires of the underworld below.
   const g = new THREE.Group();
-  const stone = mat(0x5a5470, { roughness: 0.75, metalness: 0.05 });
-  const dark = mat(0x3b3550, { roughness: 0.8 });
-  const trim = mat(THEME.game, glow(THEME.game, 0.6));
-  const win = mat(0xffd27a, glow(0xffd27a, 1.0));
-  // Floors: slightly narrower as they rise, each with a glowing purple band.
-  const floors = [[0.46, -0.62, 0.34], [0.42, -0.28, 0.34], [0.38, 0.06, 0.34]];
-  for (const [r, y, h] of floors) {
-    const f = new THREE.Mesh(new THREE.CylinderGeometry(r - 0.02, r, h, 16), stone);
-    f.position.y = y;
+  const faces = {
+    east: mat(0xd9dee8, { metalness: 0.8, roughness: 0.25 }),
+    west: new THREE.MeshStandardMaterial({ color: 0xcfefff, metalness: 0.1, roughness: 0.05, transparent: true, opacity: 0.85, emissive: 0x9fdcff, emissiveIntensity: 0.25 }),
+    south: mat(0x1f9e8a, { metalness: 0.3, roughness: 0.2, ...glow(0x1f9e8a, 0.2) }),
+    north: mat(0xe0b54a, { metalness: 0.85, roughness: 0.22 }),
+    top: mat(0xe8c766, { metalness: 0.7, roughness: 0.3 }),
+  };
+  // BoxGeometry faces: +x, -x, +y, -y, +z, -z.
+  const tierMats = [faces.east, faces.west, faces.top, faces.top, faces.south, faces.north];
+
+  // Underworld fire: a dark basin with flames rising towards the ocean floor.
+  const basin = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.4, 0.12, 24, 1, true), mat(0x2a1210, { roughness: 0.9, side: THREE.DoubleSide }));
+  basin.position.y = -1.22;
+  g.add(basin);
+  const flames = [];
+  for (let k = 0; k < 16; k++) {
+    const a = (k / 16) * Math.PI * 2;
+    const r = 0.12 + (k % 4) * 0.12;
+    const color = [0xff3b1f, 0xff6a1f, 0xff9a2a, 0xffd04a][k % 4];
+    const f = new THREE.Mesh(new THREE.ConeGeometry(0.08 + (k % 3) * 0.03, 0.42, 8), mat(color, { roughness: 0.6, transparent: true, opacity: 0.95, ...glow(color, 2.2) }));
+    f.position.set(Math.cos(a) * r, -1.0, Math.sin(a) * r);
     g.add(f);
-    const band = new THREE.Mesh(new THREE.TorusGeometry(r - 0.01, 0.022, 8, 32), trim);
-    band.rotation.x = Math.PI / 2;
-    band.position.y = y + h / 2;
-    g.add(band);
-    // Lit windows around each floor.
-    for (let k = 0; k < 4; k++) {
-      const a = (k / 4) * Math.PI * 2 + (y > 0 ? 0.4 : 0);
-      const w = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.12, 0.03), win);
-      w.position.set(Math.sin(a) * (r - 0.005), y + 0.02, Math.cos(a) * (r - 0.005));
-      w.rotation.y = a;
-      g.add(w);
-    }
+    flames.push({ f, phase: k * 1.37 });
   }
-  // Arched door at the base.
-  const door = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.04, 16, 1, false, 0, Math.PI), dark);
-  door.rotation.set(Math.PI / 2, 0, 0);
-  door.position.set(0, -0.68, 0.46);
-  g.add(door);
-  const doorLow = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.12, 0.04), dark);
-  doorLow.position.set(0, -0.74, 0.46);
-  g.add(doorLow);
-  // Battlements: a wider top ring with merlons.
-  const top = new THREE.Mesh(new THREE.CylinderGeometry(0.46, 0.38, 0.1, 16), stone);
-  top.position.y = 0.28;
-  g.add(top);
-  for (let k = 0; k < 10; k++) {
-    const a = (k / 10) * Math.PI * 2;
-    const m = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.12, 0.09), stone);
-    m.position.set(Math.sin(a) * 0.42, 0.39, Math.cos(a) * 0.42);
-    m.rotation.y = a;
-    g.add(m);
+  const fireLight = new THREE.PointLight(0xff6a1f, 2.5, 2.5);
+  fireLight.position.y = -0.95;
+  g.add(fireLight);
+  // The Sithandon ocean and the seven ranges.
+  const sea = new THREE.Mesh(new THREE.CylinderGeometry(0.98, 0.98, 0.07, 48), new THREE.MeshStandardMaterial({ color: 0x1677c8, roughness: 0.12, metalness: 0.35, transparent: true, opacity: 0.8, emissive: 0x0f5aa8, emissiveIntensity: 0.35 }));
+  sea.position.y = -0.7;
+  g.add(sea);
+  const rangeMat = mat(0xb9a37a, { roughness: 0.7 });
+  for (let k = 0; k < 7; k++) {
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.42 + k * 0.08, 0.012, 6, 64), rangeMat);
+    ring.rotation.x = Math.PI / 2;
+    ring.position.y = -0.655;
+    g.add(ring);
   }
-  // A short spire and a flag.
-  const spire = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.42, 16), mat(THEME.game, { roughness: 0.4, ...glow(THEME.game, 0.25) }));
-  spire.position.y = 0.55;
+  // Trikut: three rocks lifting the mountain out of the ocean.
+  const rock = mat(0x7a6d60, { roughness: 0.9 });
+  for (let k = 0; k < 3; k++) {
+    const a = (k / 3) * Math.PI * 2 + Math.PI / 6;
+    const r = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.12, 0.26, 7), rock);
+    r.position.set(Math.cos(a) * 0.18, -0.55, Math.sin(a) * 0.18);
+    g.add(r);
+  }
+  // The mountain: one smooth square pyramid, its top cut flat for the palace. Each side is its
+  // own face, so it takes its direction's colour.
+  const H = 0.78, B = 0.46, T = 0.1;
+  const v = [
+    [-B, 0, B], [B, 0, B], [B, 0, -B], [-B, 0, -B], // foot: front-left, front-right, back-right, back-left
+    [-T, H, T], [T, H, T], [T, H, -T], [-T, H, -T], // top
+  ];
+  const quads = [[0, 1, 5, 4], [1, 2, 6, 5], [2, 3, 7, 6], [3, 0, 4, 7], [4, 5, 6, 7]];
+  const pos = [];
+  const pyramid = new THREE.BufferGeometry();
+  quads.forEach((q, i) => {
+    for (const k of [0, 1, 2, 0, 2, 3]) pos.push(...v[q[k]]);
+    pyramid.addGroup(i * 6, 6, i);
+  });
+  pyramid.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+  pyramid.computeVertexNormals();
+  // Faces: front (+z) south, right (+x) east, back (-z) north, left (-x) west, then the top.
+  const mountain = new THREE.Mesh(pyramid, [faces.south, faces.east, faces.north, faces.west, faces.top]);
+  mountain.position.y = -0.42;
+  g.add(mountain);
+  let y = -0.42 + H;
+  // Tavatimsa: a small palace with tiered roofs and a spire, glowing gold.
+  const gold = mat(0xf2cf6b, { metalness: 0.85, roughness: 0.2, ...glow(0xf2cf6b, 0.55) });
+  const hall = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.08, 0.16), mat(0xfff4dc, glow(0xffe6a8, 0.4)));
+  hall.position.y = y + 0.04;
+  g.add(hall);
+  let ry = y + 0.09;
+  for (const w of [0.2, 0.15, 0.1]) {
+    const roof = new THREE.Mesh(new THREE.CylinderGeometry(w * 0.35, w * 0.72, 0.05, 4), gold);
+    roof.rotation.y = Math.PI / 4;
+    roof.position.y = ry;
+    g.add(roof);
+    ry += 0.045;
+  }
+  const spire = new THREE.Mesh(new THREE.ConeGeometry(0.025, 0.14, 8), gold);
+  spire.position.y = ry + 0.06;
   g.add(spire);
-  const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.3, 6), mat(0xdddddd, { metalness: 0.8 }));
-  pole.position.y = 0.9;
-  g.add(pole);
-  const flag = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.12), new THREE.MeshStandardMaterial({ color: THEME.music, side: THREE.DoubleSide, ...glow(THEME.music, 0.4) }));
-  flag.position.set(0.1, 0.99, 0);
-  g.add(flag);
-  g.scale.setScalar(1.05);
+  // The sun and the moon circling the mountain.
+  const sun = new THREE.Mesh(new THREE.SphereGeometry(0.065, 16, 12), mat(0xffb020, glow(0xffb020, 1.6)));
+  const moon = new THREE.Mesh(new THREE.SphereGeometry(0.05, 16, 12), mat(0xdfe8ff, { metalness: 0.4, ...glow(0xbfd0ff, 0.9) }));
+  g.add(sun, moon);
+  g.userData.tick = (t) => {
+    for (const { f, phase } of flames) {
+      const s = 0.75 + Math.sin(t * 9 + phase) * 0.22 + Math.sin(t * 5.3 + phase * 2) * 0.12;
+      f.scale.set(1, s, 1);
+      f.position.y = -1.0 + (s - 1) * 0.2;
+    }
+    sun.position.set(Math.cos(t * 0.8) * 0.62, -0.1, Math.sin(t * 0.8) * 0.62);
+    moon.position.set(Math.cos(t * 0.8 + Math.PI) * 0.62, -0.1, Math.sin(t * 0.8 + Math.PI) * 0.62);
+  };
+  g.scale.setScalar(0.95);
   return g;
 }
 
@@ -265,7 +312,7 @@ const WORKS = [
   { name: "ภาษีแม่ค้า · PDF Tools ไทย (แอปมือถือ)", theme: "it", make: phone, href: "#works" },
   { name: "AetherReel Studio · วิดีโอ AI", theme: "it", make: clapper, href: "#works" },
   { name: "ED GAMER · ช่องเกม", theme: "game", make: gamepad, href: "https://www.youtube.com/@ED._GAMER-SP" },
-  { name: "เกม RPG หอคอย 50 ชั้น · กำลังพัฒนา", theme: "game", make: tower, href: "#works" },
+  { name: "เกม RPG หอคอย 50 ชั้น · กำลังพัฒนา", theme: "game", make: meru, href: "#works" },
   { name: "นกฮูก STORY & MUSIC · ไลฟ์เพลง", theme: "music", make: headphones, href: "https://www.youtube.com/@Owl_STORY-MUSIC/streams" },
   { name: "นกฮูก STORY & MUSIC · เพลงแต่งเอง", theme: "music", make: musicNote, href: "https://www.youtube.com/@Owl_STORY-MUSIC/videos" },
 ];
@@ -451,6 +498,7 @@ function startScene() {
       it.holder.rotation.set(-orbit.rotation.x * 0.6, Math.sin(t * it.spin + i) * 0.6, 0);
       it.hover += ((i === hovered ? 1 : 0) - it.hover) * 0.15;
       it.obj.scale.setScalar(0.85 + it.hover * 0.35);
+      it.obj.userData.tick?.(t);
       for (const gm of it.glowing) {
         gm.m.emissive.setHex(it.hover > 0.05 ? THEME[it.theme] : gm.color);
         gm.m.emissiveIntensity = gm.base + it.hover * 0.6;
@@ -468,3 +516,4 @@ function startScene() {
 }
 
 startScene();
+
