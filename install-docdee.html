@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>วิธีติดตั้ง DocDee PDF (.msi) — Supakor.Studio</title>
-  <meta name="description" content="คู่มือติดตั้ง DocDee PDF ด้วยไฟล์ .msi ทีละขั้นตอน พร้อมวิธีผ่านหน้าจอ Windows protected your PC">
+  <title>วิธีติดตั้ง DocDee PDF — Supakor.Studio</title>
+  <meta name="description" content="คู่มือติดตั้ง DocDee PDF ทุกแบบ: Microsoft Store, ไฟล์ .msi และแบบพกพา (portable) ทีละขั้นตอนพร้อมภาพประกอบ">
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="stylesheet" href="assets/style.css">
   <style>
@@ -54,6 +54,33 @@
     table.faq { border-collapse: collapse; width: 100%; font-size: 16px; }
     table.faq td { border-top: 1px solid var(--border); padding: 10px 8px; vertical-align: top; }
     table.faq td:first-child { font-weight: 700; width: 38%; }
+    /* Method chooser */
+    .methods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 18px 0; }
+    .methods a { display: block; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; color: var(--text); box-shadow: var(--shadow); }
+    .methods a:hover { text-decoration: none; border-color: var(--sky); }
+    .methods .ic { font-size: 26px; }
+    .methods b { display: block; margin: 4px 0 2px; }
+    .methods small { color: var(--muted); font-size: 14px; line-height: 1.45; display: block; }
+    .rec { display: inline-block; background: var(--gold); color: #1b1b1b; border-radius: 999px; padding: 0 9px; font-size: 12.5px; font-weight: 700; vertical-align: middle; }
+    @media (max-width: 720px) { .methods { grid-template-columns: 1fr; } }
+    h2.method { font-size: 26px; margin-top: 48px; padding-top: 18px; border-top: 2px solid var(--border); }
+    /* Store drawings */
+    .storecard { display: flex; gap: 16px; align-items: center; }
+    .storecard img { width: 72px; height: 72px; border-radius: 12px; }
+    .storecard .nm { font-size: 18px; font-weight: 600; }
+    .storecard .pub { color: #0067c0; font-size: 12.5px; }
+    .btn-store { display: inline-block; background: #0067c0; color: #fff; border-radius: 5px; padding: 4px 22px; font-weight: 600; margin-top: 6px; }
+    .btn-store.go { outline: 3px solid var(--gold); outline-offset: 3px; }
+    .askbar { padding: 12px 16px; }
+    .askbar .foot { justify-content: flex-start; margin-top: 10px; }
+    /* Explorer drawings */
+    .menu { max-width: 230px; background: #f9f9f9; padding: 4px; }
+    .menu div { padding: 4px 10px; border-radius: 4px; }
+    .menu .on { background: #e5f1fb; outline: 3px solid var(--gold); }
+    .menu hr { border: 0; border-top: 1px solid #ddd; margin: 3px 0; }
+    .files div { padding: 3px 8px; display: flex; gap: 8px; align-items: center; }
+    .files .on { background: #cce8ff; outline: 3px solid var(--gold); border-radius: 3px; }
+    .shot { border-radius: 10px; border: 1px solid var(--border); box-shadow: var(--shadow); margin: 10px 0 2px; }
   </style>
 </head>
 <body>
@@ -64,22 +91,78 @@
     </div>
   </header>
   <main class="page">
-    <h1>วิธีติดตั้ง DocDee PDF ด้วยไฟล์ .msi</h1>
-    <p>คู่มือนี้พาติดตั้งทีละขั้น ใช้เวลาประมาณ 2 นาที ใช้ได้กับ Windows 10 และ 11 (64 บิต)</p>
+    <h1>วิธีติดตั้ง DocDee PDF</h1>
+    <p>ติดตั้งได้ 3 แบบ เลือกแบบไหนก็ได้ ใช้เวลาประมาณ 2 นาที ใช้ได้กับ Windows 10 และ 11 (64 บิต) ฟรีทุกแบบ</p>
 
-    <p class="tip">💡 <strong>ทางที่ง่ายกว่า:</strong> ติดตั้งจาก <a href="https://apps.microsoft.com/detail/9PFD7L0LW5V7">Microsoft Store</a>
-      ไม่มีหน้าจอเตือน และอัปเดตให้อัตโนมัติ ใช้ไฟล์ .msi เมื่อเครื่องเปิด Store ไม่ได้ หรืออยากเลือกโฟลเดอร์ติดตั้งเอง</p>
+    <div class="methods">
+      <a href="#store"><span class="ic">🛍️</span><b>Microsoft Store <span class="rec">แนะนำ</span></b>
+        <small>ง่ายที่สุด ไม่มีหน้าจอเตือน อัปเดตให้อัตโนมัติ</small></a>
+      <a href="#msi"><span class="ic">📦</span><b>ไฟล์ติดตั้ง .msi</b>
+        <small>เมื่อเครื่องเปิด Store ไม่ได้ หรืออยากเลือกโฟลเดอร์เอง</small></a>
+      <a href="#portable"><span class="ic">🔌</span><b>แบบพกพา (.zip)</b>
+        <small>ไม่ต้องติดตั้ง แตกไฟล์แล้วใช้ได้เลย ใส่แฟลชไดรฟ์ได้</small></a>
+    </div>
 
     <p class="toc"><strong>ในหน้านี้:</strong>
-      <a href="#steps">ขั้นตอนติดตั้ง</a>
+      <a href="#store">Microsoft Store</a>
+      <a href="#msi">ไฟล์ .msi</a>
+      <a href="#portable">แบบพกพา</a>
+      <a href="#open">เปิดใช้งาน</a>
       <a href="#default">ตั้งเป็นโปรแกรมเปิด PDF หลัก</a>
       <a href="#update">อัปเดต / ถอนการติดตั้ง</a>
       <a href="#faq">ปัญหาที่พบบ่อย</a></p>
 
+    <h2 class="method" id="store">แบบที่ 1: ติดตั้งจาก Microsoft Store <span class="rec">แนะนำ</span></h2>
+    <ol class="steps">
+      <li>
+        <h2>เปิดหน้า DocDee PDF ใน Store</h2>
+        <p>กดลิงก์ <a href="https://apps.microsoft.com/detail/9PFD7L0LW5V7"><strong>DocDee PDF บน Microsoft Store</strong></a>
+          หรือเปิดแอป <strong>Microsoft Store</strong> ในเครื่อง แล้วค้นหาคำว่า <span class="ui">DocDee</span></p>
+        <p>ถ้าเปิดจากเบราว์เซอร์ อาจมีกล่องถามว่า <em>Open Microsoft Store?</em> ให้กด <strong>Open</strong></p>
+        <div class="win askbar" role="img" aria-label="กล่องถาม Open Microsoft Store พร้อมปุ่ม Open">
+          <div><strong>Open Microsoft Store?</strong></div>
+          <div style="color:#555;font-size:12.5px">https://apps.microsoft.com wants to open this application.</div>
+          <div class="foot"><span class="btn-store go">Open</span><span class="btn-w">Cancel</span></div>
+        </div>
+      </li>
+      <li>
+        <h2>กด Get (รับ)</h2>
+        <p>ในหน้าของ DocDee PDF กดปุ่มสีน้ำเงิน <strong>Get</strong> หรือ <strong>รับ</strong> ไม่ต้องจ่ายเงิน</p>
+        <div class="win" role="img" aria-label="หน้า DocDee PDF ใน Microsoft Store พร้อมปุ่ม Get">
+          <div class="bar"><span>Microsoft Store</span><span>—  ▢  ✕</span></div>
+          <div class="body storecard">
+            <img src="assets/docdee.png" alt="">
+            <div>
+              <div class="nm">DocDee PDF</div>
+              <div class="pub">Supakor.Studio</div>
+              <div style="font-size:12.5px;color:#555">Free · Productivity</div>
+              <span class="btn-store go">Get</span>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li>
+        <h2>รอดาวน์โหลด แล้วกด Open (เปิด)</h2>
+        <p>Store จะดาวน์โหลดและติดตั้งให้เอง เสร็จแล้วปุ่มจะเปลี่ยนเป็น <strong>Open</strong> / <strong>เปิด</strong> ไปต่อที่<a href="#open">เปิดใช้งาน</a></p>
+        <div class="win" role="img" aria-label="ปุ่ม Get เปลี่ยนเป็น Open หลังติดตั้งเสร็จ">
+          <div class="body storecard">
+            <img src="assets/docdee.png" alt="">
+            <div>
+              <div class="nm">DocDee PDF</div>
+              <div class="pub">Supakor.Studio</div>
+              <span class="btn-store go">Open</span>
+            </div>
+          </div>
+        </div>
+        <p class="tip">ติดตั้งจาก Store แล้ว เวลามีรุ่นใหม่ Store จะอัปเดตให้เอง ไม่ต้องดาวน์โหลดใหม่</p>
+      </li>
+    </ol>
+
+    <h2 class="method" id="msi">แบบที่ 2: ติดตั้งด้วยไฟล์ .msi</h2>
     <ol class="steps" id="steps">
       <li>
         <h2>ดาวน์โหลดไฟล์ติดตั้ง</h2>
-        <p>กดปุ่ม <a href="https://github.com/supakor-studio/DocDee-releases/releases/latest"><strong>ดาวน์โหลดรุ่นล่าสุด</strong></a>
+        <p>กดปุ่ม <strong>ตัวติดตั้ง .msi</strong> ใน<a href="./#docdee">หน้า DocDee PDF</a> หรือเข้า<a href="https://github.com/supakor-studio/DocDee-releases/releases/latest"><strong>หน้าดาวน์โหลดรุ่นล่าสุด</strong></a>
           แล้วเลือกไฟล์ที่ลงท้ายด้วย <span class="ui">-windows-x64.msi</span> (ขนาดประมาณ 100 MB)</p>
         <p class="tip">ถ้า Chrome หรือ Edge บอกว่า <em>"ไฟล์นี้ไม่ค่อยมีคนดาวน์โหลด"</em> ให้กดที่รายการดาวน์โหลด แล้วเลือก <span class="ui">Keep</span> / <span class="ui">เก็บไว้</span>
           (ใน Edge อาจต้องกด <span class="ui">…</span> ก่อน แล้วเลือก <span class="ui">Keep anyway</span>)</p>
@@ -91,7 +174,7 @@
       </li>
 
       <li>
-        <h2>ถ้าขึ้นหน้าจอสีน้ำเงิน "Windows protected your PC"</h2>
+        <h2 id="smartscreen">ถ้าขึ้นหน้าจอสีน้ำเงิน "Windows protected your PC"</h2>
         <p>ให้กด <strong>More info</strong> (ข้อมูลเพิ่มเติม) ก่อน แล้วปุ่ม <strong>Run anyway</strong> (เรียกใช้ต่อไป) จะปรากฏขึ้นมา ให้กดปุ่มนั้น</p>
         <div class="pair">
           <div>
@@ -164,7 +247,7 @@
 
       <li>
         <h2>รอสักครู่ แล้วกด Finish</h2>
-        <p>เมื่อขึ้นว่า <strong>Setup completed successfully</strong> กด <strong>Finish</strong> เป็นอันเสร็จ</p>
+        <p>เมื่อขึ้นว่า <strong>Setup completed successfully</strong> กด <strong>Finish</strong> เป็นอันเสร็จ ไปต่อที่<a href="#open">เปิดใช้งาน</a></p>
         <div class="win" role="img" aria-label="หน้าต่าง Setup completed successfully พร้อมปุ่ม Finish">
           <div class="bar"><span>DocDee PDF Setup</span><span>✕</span></div>
           <div class="body">
@@ -175,12 +258,56 @@
         </div>
       </li>
 
+    </ol>
+
+    <h2 class="method" id="portable">แบบที่ 3: แบบพกพา ไม่ต้องติดตั้ง (.zip)</h2>
+    <p>เหมาะกับเครื่องที่ไม่มีสิทธิ์ติดตั้งโปรแกรม หรืออยากพกใส่แฟลชไดรฟ์ไปใช้หลายเครื่อง</p>
+    <ol class="steps">
       <li>
-        <h2>เปิดใช้งาน</h2>
-        <p>กดปุ่ม <strong>Start</strong> แล้วพิมพ์ <span class="ui">DocDee</span> หรือดับเบิลคลิกไอคอนบน Desktop</p>
-        <p>หน้าจอโปรแกรมจะเป็นภาษาเดียวกับ Windows ถ้าอยากเปลี่ยนภาษา ไปที่ <strong>การตั้งค่า</strong> ในโปรแกรม</p>
+        <h2>ดาวน์โหลดไฟล์ .zip</h2>
+        <p>เข้า<a href="https://github.com/supakor-studio/DocDee-releases/releases/latest">หน้าดาวน์โหลดรุ่นล่าสุด</a>
+          แล้วเลือกไฟล์ที่ลงท้ายด้วย <span class="ui">-windows-x64-portable.zip</span> (ประมาณ 130 MB)</p>
+      </li>
+      <li>
+        <h2>แตกไฟล์ (Extract All)</h2>
+        <p>คลิกขวาที่ไฟล์ .zip ▸ เลือก <strong>Extract All…</strong> (แยกไฟล์ทั้งหมด) ▸ กด <strong>Extract</strong></p>
+        <div class="win menu" role="img" aria-label="เมนูคลิกขวาที่ไฟล์ zip มีคำสั่ง Extract All">
+          <div>Open</div>
+          <div class="on">Extract All…</div>
+          <hr>
+          <div>Copy</div>
+          <div>Rename</div>
+          <div>Properties</div>
+        </div>
+        <p class="tip">อย่าเปิด DocDee.exe จากในไฟล์ .zip โดยตรง ต้องแตกไฟล์ก่อน ไม่อย่างนั้นโปรแกรมจะหาไฟล์ประกอบไม่เจอ</p>
+      </li>
+      <li>
+        <h2>ดับเบิลคลิก DocDee.exe</h2>
+        <p>เปิดโฟลเดอร์ที่แตกออกมา แล้วดับเบิลคลิก <span class="ui">DocDee.exe</span></p>
+        <div class="win" role="img" aria-label="หน้าต่างโฟลเดอร์ที่มีไฟล์ DocDee.exe">
+          <div class="bar"><span>📁 DocDee-PDF-…-portable</span><span>—  ▢  ✕</span></div>
+          <div class="body files">
+            <div>📁 models</div>
+            <div>📁 tesseract</div>
+            <div>⚙️ docdee-cli.exe</div>
+            <div class="on"><img src="assets/docdee.png" alt="" width="18" height="18"> DocDee.exe</div>
+            <div>📄 portable.txt</div>
+            <div>📄 README.md</div>
+          </div>
+        </div>
+        <p>ถ้าขึ้นหน้าจอสีน้ำเงิน "Windows protected your PC" ให้ทำแบบเดียวกับ<a href="#smartscreen">ขั้นตอนนี้</a> (More info ▸ Run anyway)</p>
+        <p class="tip">การตั้งค่าของโปรแกรมจะเก็บในโฟลเดอร์ <span class="ui">DocDeeData</span> ข้างๆ DocDee.exe
+          ย้ายหรือคัดลอกทั้งโฟลเดอร์ไปเครื่องอื่นได้เลย การตั้งค่าตามไปด้วย อย่าลบไฟล์ <span class="ui">portable.txt</span> ทิ้ง</p>
       </li>
     </ol>
+
+    <h2 class="method" id="open">เปิดใช้งาน</h2>
+    <p>กดปุ่ม <strong>Start</strong> แล้วพิมพ์ <span class="ui">DocDee</span> หรือดับเบิลคลิกไอคอนบน Desktop (แบบพกพา: ดับเบิลคลิก DocDee.exe)</p>
+    <p>จะเจอหน้าแรกแบบนี้ กด <strong>เปิดไฟล์</strong> หรือลากไฟล์ PDF มาวางในหน้าต่างได้เลย เครื่องมือทั้งหมดอยู่ที่แถบด้านซ้าย</p>
+    <img class="shot" src="assets/docdee-home.jpg" width="1584" height="861" loading="lazy"
+      alt="หน้าแรกของ DocDee PDF: แถบเครื่องมือด้านซ้าย เช่น ส่งออก PDF กรอกและเซ็น แก้ไข PDF รวมไฟล์ สแกนและ OCR และเครื่องมือแนะนำตรงกลาง">
+    <p class="cap">ภาพจริงจากโปรแกรม (ธีมมืด)</p>
+    <p>หน้าจอโปรแกรมจะเป็นภาษาเดียวกับ Windows ถ้าอยากเปลี่ยนภาษา ไปที่ <strong>การตั้งค่า</strong> ▸ <strong>ภาษาของโปรแกรม</strong></p>
 
     <h2 id="default">ตั้ง DocDee เป็นโปรแกรมเปิด PDF หลัก</h2>
     <ol>
@@ -194,8 +321,10 @@
     <h2 id="update">อัปเดต / ถอนการติดตั้ง</h2>
     <ul>
       <li><strong>เช็กรุ่นใหม่:</strong> ในโปรแกรมไปที่เมนู <strong>วิธีใช้ ▸ ตรวจหาการอัปเดต</strong></li>
-      <li><strong>อัปเดต:</strong> ดาวน์โหลดไฟล์ .msi รุ่นใหม่แล้วติดตั้งทับได้เลย ไม่ต้องถอนรุ่นเก่าก่อน โปรแกรมจะติดตั้งลงโฟลเดอร์เดิม และการตั้งค่าของคุณยังอยู่ครบ</li>
-      <li><strong>ถอนการติดตั้ง:</strong> <strong>Settings</strong> ▸ <strong>Apps</strong> ▸ <strong>Installed apps</strong> ▸ หา <strong>DocDee PDF</strong> ▸ <span class="ui">…</span> ▸ <strong>Uninstall</strong>
+      <li><strong>ติดตั้งจาก Store:</strong> อัปเดตให้อัตโนมัติ ถอนการติดตั้งได้ที่ Settings ▸ Apps ▸ Installed apps</li>
+      <li><strong>แบบพกพา:</strong> แตกไฟล์ .zip รุ่นใหม่ แล้วย้ายโฟลเดอร์ <span class="ui">DocDeeData</span> จากโฟลเดอร์เก่ามาไว้ข้าง DocDee.exe ตัวใหม่ ถ้าจะเลิกใช้ ลบโฟลเดอร์ทิ้งได้เลย</li>
+      <li><strong>อัปเดต (.msi):</strong> ดาวน์โหลดไฟล์ .msi รุ่นใหม่แล้วติดตั้งทับได้เลย ไม่ต้องถอนรุ่นเก่าก่อน โปรแกรมจะติดตั้งลงโฟลเดอร์เดิม และการตั้งค่าของคุณยังอยู่ครบ</li>
+      <li><strong>ถอนการติดตั้ง (.msi):</strong> <strong>Settings</strong> ▸ <strong>Apps</strong> ▸ <strong>Installed apps</strong> ▸ หา <strong>DocDee PDF</strong> ▸ <span class="ui">…</span> ▸ <strong>Uninstall</strong>
         (หรือดับเบิลคลิกไฟล์ .msi รุ่นเดียวกันอีกครั้ง แล้วเลือก <strong>Remove</strong>)</li>
     </ul>
 
@@ -208,7 +337,7 @@
       <tr><td>ขึ้น Setup failed</td>
         <td>ลองรีสตาร์ทเครื่องแล้วติดตั้งใหม่ ถ้ายังไม่ได้ ถ่ายภาพหน้าจอส่งมาที่<a href="https://m.me/Supakor.Studio">แชทเพจ Facebook</a></td></tr>
       <tr><td>ไม่อยากติดตั้ง / ไม่มีสิทธิ์ติดตั้ง</td>
-        <td>ใช้ไฟล์ <span class="ui">-portable.zip</span> จาก<a href="https://github.com/supakor-studio/DocDee-releases/releases/latest">หน้าดาวน์โหลด</a> แตกไฟล์แล้วเปิด <span class="ui">DocDee.exe</span> ได้เลย</td></tr>
+        <td>ใช้<a href="#portable">แบบพกพา (.zip)</a> แตกไฟล์แล้วเปิด <span class="ui">DocDee.exe</span> ได้เลย</td></tr>
       <tr id="faq-hash"><td>อยากตรวจว่าไฟล์เป็นของแท้</td>
         <td>คลิกขวาที่ปุ่ม Start ▸ เปิด <strong>Terminal</strong> หรือ <strong>PowerShell</strong> แล้วพิมพ์<br>
           <kbd>Get-FileHash $HOME\Downloads\DocDee-PDF-*.msi</kbd><br>
@@ -217,7 +346,7 @@
 
     <h2>ติดปัญหาหรือมีคำแนะนำ</h2>
     <p>แจ้งได้จากเมนู <strong>วิธีใช้ ▸ แจ้งปัญหา…</strong> ในโปรแกรม, <a href="https://m.me/Supakor.Studio">แชทเพจ Facebook</a> หรืออีเมล <a href="mailto:supakor.studio@gmail.com">supakor.studio@gmail.com</a></p>
-    <p class="cap">ภาพหน้าต่างในหน้านี้เป็นภาพจำลอง หน้าจอจริงอาจต่างไปเล็กน้อยตามรุ่นของ Windows</p>
+    <p class="cap">ภาพหน้าต่าง Windows และ Store ในหน้านี้เป็นภาพจำลอง หน้าจอจริงอาจต่างไปเล็กน้อยตามรุ่นของ Windows</p>
   </main>
   <footer class="site"><div class="wrap"><span>© 2026 Supakor.Studio</span><a href="./">กลับหน้าแรก</a></div></footer>
 </body>
