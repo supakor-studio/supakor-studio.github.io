@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>วิธีติดตั้ง DocDee PDF (.msi) — Supakor.Studio</title>
+  <meta name="description" content="คู่มือติดตั้ง DocDee PDF ด้วยไฟล์ .msi ทีละขั้นตอน พร้อมวิธีผ่านหน้าจอ Windows protected your PC">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    .steps { counter-reset: step; list-style: none; padding: 0; margin: 0; }
+    .steps > li { counter-increment: step; position: relative; padding: 0 0 8px 52px; margin: 0 0 28px; }
+    .steps > li::before {
+      content: counter(step); position: absolute; left: 0; top: 0;
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--navy); color: #fff; font-weight: 700;
+      display: grid; place-items: center;
+    }
+    @media (prefers-color-scheme: dark) { .steps > li::before { background: var(--sky); color: #06152e; } }
+    .steps h2 { margin: 2px 0 8px; font-size: 21px; }
+    .tip { border-left: 4px solid var(--gold); background: var(--card); border-radius: 8px; padding: 10px 14px; margin: 12px 0; font-size: 16px; }
+    .toc { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 18px; font-size: 16px; }
+    .toc a { margin-right: 14px; white-space: nowrap; }
+    kbd, .ui { font-family: "Segoe UI", system-ui, sans-serif; font-size: 0.92em; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 1px 7px; white-space: nowrap; }
+
+    /* Drawings of the Windows screens (not screenshots). Always light, like Windows dialogs. */
+    .win { max-width: 470px; margin: 14px 0 6px; border-radius: 8px; overflow: hidden; box-shadow: var(--shadow); border: 1px solid #c9ced8;
+      font-family: "Segoe UI", system-ui, sans-serif; font-size: 13.5px; line-height: 1.45; color: #1b1b1b; background: #fff; }
+    .win .bar { background: #f3f3f3; border-bottom: 1px solid #e1e1e1; padding: 6px 12px; font-size: 12.5px; display: flex; justify-content: space-between; }
+    .win .body { padding: 16px 20px; }
+    .win .title { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+    .win .row { display: flex; gap: 8px; align-items: center; margin: 6px 0; }
+    .win .field { flex: 1; border: 1px solid #8a8a8a; padding: 3px 6px; font-size: 12.5px; background: #fff; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+    .win .btn-w { border: 1px solid #adadad; background: #e1e1e1; padding: 3px 16px; font-size: 12.5px; }
+    .win .btn-w.go { outline: 3px solid var(--gold); outline-offset: 2px; background: #e5f1fb; border-color: #0078d4; }
+    .win .foot { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+    .win .chk::before { content: "☑ "; color: #0067c0; }
+    .win .radio::before { content: "○ "; }
+    .win .radio.on::before { content: "◉ "; color: #0067c0; }
+    .win .hl { outline: 3px solid var(--gold); outline-offset: 2px; border-radius: 3px; }
+    .smart { background: #0a5ea8; color: #fff; border-color: #0a5ea8; }
+    .smart .body { padding: 22px 24px 18px; min-height: 210px; display: flex; flex-direction: column; }
+    .smart .title { font-size: 23px; font-weight: 400; }
+    .smart .link { text-decoration: underline; }
+    .smart .meta { font-size: 12.5px; opacity: 0.95; margin-top: 10px; }
+    .smart .foot { margin-top: auto; padding-top: 16px; }
+    .smart .btn-s { background: #fff; color: #0a3d6e; padding: 6px 16px; font-weight: 600; }
+    .smart .btn-s.ghost { background: transparent; color: #fff; border: 1px solid #fff; }
+    .smart .go { outline: 3px solid var(--gold); outline-offset: 3px; }
+    .cap { font-size: 14px; color: var(--muted); margin: 0 0 4px; }
+    .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .pair .win { margin: 6px 0; }
+    @media (max-width: 720px) { .pair { grid-template-columns: 1fr; } .steps > li { padding-left: 46px; } }
+    table.faq { border-collapse: collapse; width: 100%; font-size: 16px; }
+    table.faq td { border-top: 1px solid var(--border); padding: 10px 8px; vertical-align: top; }
+    table.faq td:first-child { font-weight: 700; width: 38%; }
+  </style>
+</head>
+<body>
+  <header class="site">
+    <div class="wrap">
+      <a class="brand" href="./"><img src="assets/mark.png" alt="">Supakor.Studio</a>
+      <nav class="top"><a href="./">หน้าแรก</a><a href="./#docdee">DocDee PDF</a></nav>
+    </div>
+  </header>
+  <main class="page">
+    <h1>วิธีติดตั้ง DocDee PDF ด้วยไฟล์ .msi</h1>
+    <p>คู่มือนี้พาติดตั้งทีละขั้น ใช้เวลาประมาณ 2 นาที ใช้ได้กับ Windows 10 และ 11 (64 บิต)</p>
+
+    <p class="tip">💡 <strong>ทางที่ง่ายกว่า:</strong> ติดตั้งจาก <a href="https://apps.microsoft.com/detail/9PFD7L0LW5V7">Microsoft Store</a>
+      ไม่มีหน้าจอเตือน และอัปเดตให้อัตโนมัติ ใช้ไฟล์ .msi เมื่อเครื่องเปิด Store ไม่ได้ หรืออยากเลือกโฟลเดอร์ติดตั้งเอง</p>
+
+    <p class="toc"><strong>ในหน้านี้:</strong>
+      <a href="#steps">ขั้นตอนติดตั้ง</a>
+      <a href="#default">ตั้งเป็นโปรแกรมเปิด PDF หลัก</a>
+      <a href="#update">อัปเดต / ถอนการติดตั้ง</a>
+      <a href="#faq">ปัญหาที่พบบ่อย</a></p>
+
+    <ol class="steps" id="steps">
+      <li>
+        <h2>ดาวน์โหลดไฟล์ติดตั้ง</h2>
+        <p>กดปุ่ม <a href="https://github.com/supakor-studio/DocDee-releases/releases/latest"><strong>ดาวน์โหลดรุ่นล่าสุด</strong></a>
+          แล้วเลือกไฟล์ที่ลงท้ายด้วย <span class="ui">-windows-x64.msi</span> (ขนาดประมาณ 100 MB)</p>
+        <p class="tip">ถ้า Chrome หรือ Edge บอกว่า <em>"ไฟล์นี้ไม่ค่อยมีคนดาวน์โหลด"</em> ให้กดที่รายการดาวน์โหลด แล้วเลือก <span class="ui">Keep</span> / <span class="ui">เก็บไว้</span>
+          (ใน Edge อาจต้องกด <span class="ui">…</span> ก่อน แล้วเลือก <span class="ui">Keep anyway</span>)</p>
+      </li>
+
+      <li>
+        <h2>ดับเบิลคลิกไฟล์ .msi</h2>
+        <p>เปิดโฟลเดอร์ <strong>Downloads</strong> แล้วดับเบิลคลิกไฟล์ <span class="ui">DocDee-PDF-…-windows-x64.msi</span></p>
+      </li>
+
+      <li>
+        <h2>ถ้าขึ้นหน้าจอสีน้ำเงิน "Windows protected your PC"</h2>
+        <p>ให้กด <strong>More info</strong> (ข้อมูลเพิ่มเติม) ก่อน แล้วปุ่ม <strong>Run anyway</strong> (เรียกใช้ต่อไป) จะปรากฏขึ้นมา ให้กดปุ่มนั้น</p>
+        <div class="pair">
+          <div>
+            <p class="cap">① กด More info</p>
+            <div class="win smart" role="img" aria-label="หน้าจอ Windows protected your PC ที่มีลิงก์ More info">
+              <div class="body">
+                <div class="title">Windows protected your PC</div>
+                <div>Microsoft Defender SmartScreen prevented an unrecognized app from starting…</div>
+                <div class="meta"><span class="link go">More info</span></div>
+                <div class="foot"><span class="btn-s">Don't run</span></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <p class="cap">② กด Run anyway</p>
+            <div class="win smart" role="img" aria-label="หน้าจอเดียวกันหลังกด More info มีปุ่ม Run anyway">
+              <div class="body">
+                <div class="title">Windows protected your PC</div>
+                <div class="meta">App: DocDee-PDF-…-windows-x64.msi<br>Publisher: Unknown publisher</div>
+                <div class="foot"><span class="btn-s ghost go">Run anyway</span><span class="btn-s">Don't run</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="tip"><strong>ทำไมถึงขึ้นแบบนี้?</strong> ตัวติดตั้งยังไม่ได้ซื้อลายเซ็นดิจิทัล (ใบรับรองราคาหลายพันบาทต่อปี)
+          Windows จึงขึ้นว่า "Unknown publisher" กับโปรแกรมใหม่ทุกตัวแบบนี้ ไม่ได้แปลว่าไฟล์มีไวรัส
+          อยากมั่นใจว่าไฟล์ไม่ถูกแก้ไข ดู<a href="#faq-hash">วิธีตรวจไฟล์</a>ด้านล่าง หรือติดตั้งจาก Microsoft Store ที่ Microsoft ตรวจและเซ็นให้แล้ว</p>
+      </li>
+
+      <li>
+        <h2>เลือกว่าใครจะใช้โปรแกรม</h2>
+        <p>หน้าต่าง <strong>Who should use DocDee PDF?</strong> มีให้เลือก 2 แบบ</p>
+        <ul>
+          <li><strong>Only for me</strong> (เฉพาะฉัน): <strong>แนะนำ</strong> ไม่ต้องใช้รหัสผู้ดูแลเครื่อง</li>
+          <li><strong>Everyone on this computer</strong> (ทุกคนในเครื่องนี้): Windows จะถามสิทธิ์ผู้ดูแล (Administrator) ให้กด <span class="ui">Yes</span></li>
+        </ul>
+        <div class="win" role="img" aria-label="หน้าต่างเลือก Only for me หรือ Everyone on this computer">
+          <div class="bar"><span>DocDee PDF Setup</span><span>✕</span></div>
+          <div class="body">
+            <div class="title">Who should use DocDee PDF?</div>
+            <div class="row radio on hl">Only for me (no administrator permission needed)</div>
+            <div class="row radio">Everyone on this computer (asks an administrator)</div>
+            <div class="foot"><span class="btn-w go">Next</span><span class="btn-w">Cancel</span></div>
+          </div>
+        </div>
+        <p>แล้วกด <strong>Next</strong></p>
+      </li>
+
+      <li>
+        <h2>กด Install</h2>
+        <p>หน้าต่าง <strong>Install DocDee PDF</strong> มีตัวเลือกให้ ส่วนใหญ่ไม่ต้องแก้อะไร กด <strong>Install</strong> ได้เลย</p>
+        <div class="win" role="img" aria-label="หน้าต่าง Install DocDee PDF มีช่องโฟลเดอร์ ตัวเลือกทางลัด และปุ่ม Install">
+          <div class="bar"><span>DocDee PDF Setup</span><span>✕</span></div>
+          <div class="body">
+            <div class="title">Install DocDee PDF</div>
+            <div>Setup will install DocDee PDF only for your account and add it to the Start menu.</div>
+            <div style="margin-top:8px">Install to:</div>
+            <div class="row"><span class="field">C:\Users\…\AppData\Local\Programs\Supakor.Studio\DocDee PDF\</span><span class="btn-w">Browse…</span></div>
+            <div class="row chk">Create a desktop shortcut</div>
+            <div class="row chk">Add Edit and Combine files to the right-click menu of PDF files</div>
+            <div class="foot"><span class="btn-w go">Install</span><span class="btn-w">Cancel</span></div>
+          </div>
+        </div>
+        <ul>
+          <li><strong>Install to</strong>: โฟลเดอร์ที่ติดตั้ง กด <span class="ui">Browse…</span> ถ้าอยากเปลี่ยน</li>
+          <li><strong>Create a desktop shortcut</strong>: สร้างไอคอนบนหน้าจอ Desktop</li>
+          <li><strong>Add Edit and Combine files…</strong>: เพิ่มเมนู "แก้ไขด้วย DocDee" และ "รวมไฟล์" เวลาคลิกขวาที่ไฟล์ PDF</li>
+        </ul>
+      </li>
+
+      <li>
+        <h2>รอสักครู่ แล้วกด Finish</h2>
+        <p>เมื่อขึ้นว่า <strong>Setup completed successfully</strong> กด <strong>Finish</strong> เป็นอันเสร็จ</p>
+        <div class="win" role="img" aria-label="หน้าต่าง Setup completed successfully พร้อมปุ่ม Finish">
+          <div class="bar"><span>DocDee PDF Setup</span><span>✕</span></div>
+          <div class="body">
+            <div class="title">Setup completed successfully</div>
+            <div>DocDee PDF setup has completed successfully. Click Finish to close this window.</div>
+            <div class="foot"><span class="btn-w go">Finish</span></div>
+          </div>
+        </div>
+      </li>
+
+      <li>
+        <h2>เปิดใช้งาน</h2>
+        <p>กดปุ่ม <strong>Start</strong> แล้วพิมพ์ <span class="ui">DocDee</span> หรือดับเบิลคลิกไอคอนบน Desktop</p>
+        <p>หน้าจอโปรแกรมจะเป็นภาษาเดียวกับ Windows ถ้าอยากเปลี่ยนภาษา ไปที่ <strong>การตั้งค่า</strong> ในโปรแกรม</p>
+      </li>
+    </ol>
+
+    <h2 id="default">ตั้ง DocDee เป็นโปรแกรมเปิด PDF หลัก</h2>
+    <ol>
+      <li>ครั้งแรกที่เปิด DocDee โปรแกรมจะถามว่า <strong>ตั้ง DocDee เป็นแอป PDF เริ่มต้นหรือไม่?</strong> ตอบตกลงได้เลย
+        หรือตั้งเองภายหลังที่ <strong>การตั้งค่า</strong> ▸ <strong>ทั่วไป</strong> ▸ <strong>โปรแกรมเปิด PDF หลัก</strong> ▸ กด <strong>เปิดการตั้งค่าแอปเริ่มต้น</strong></li>
+      <li>Windows จะเปิดหน้า <strong>Default apps</strong> (แอปเริ่มต้น) ให้กดที่ <span class="ui">.pdf</span> แล้วเลือก <strong>DocDee PDF</strong></li>
+    </ol>
+    <p>หรือคลิกขวาที่ไฟล์ PDF ไฟล์ไหนก็ได้ ▸ <strong>Open with</strong> ▸ <strong>Choose another app</strong> ▸ เลือก <strong>DocDee PDF</strong> ▸ กด <strong>Always</strong></p>
+    <p>ไฟล์ PDF ในเครื่องจะเปลี่ยนเป็นไอคอนลูกหมาบนกระดาษ PDF 🐶</p>
+
+    <h2 id="update">อัปเดต / ถอนการติดตั้ง</h2>
+    <ul>
+      <li><strong>เช็กรุ่นใหม่:</strong> ในโปรแกรมไปที่เมนู <strong>วิธีใช้ ▸ ตรวจหาการอัปเดต</strong></li>
+      <li><strong>อัปเดต:</strong> ดาวน์โหลดไฟล์ .msi รุ่นใหม่แล้วติดตั้งทับได้เลย ไม่ต้องถอนรุ่นเก่าก่อน โปรแกรมจะติดตั้งลงโฟลเดอร์เดิม และการตั้งค่าของคุณยังอยู่ครบ</li>
+      <li><strong>ถอนการติดตั้ง:</strong> <strong>Settings</strong> ▸ <strong>Apps</strong> ▸ <strong>Installed apps</strong> ▸ หา <strong>DocDee PDF</strong> ▸ <span class="ui">…</span> ▸ <strong>Uninstall</strong>
+        (หรือดับเบิลคลิกไฟล์ .msi รุ่นเดียวกันอีกครั้ง แล้วเลือก <strong>Remove</strong>)</li>
+    </ul>
+
+    <h2 id="faq">ปัญหาที่พบบ่อย</h2>
+    <table class="faq">
+      <tr><td>ไม่เห็นปุ่ม Run anyway</td>
+        <td>ต้องกดคำว่า <strong>More info</strong> ก่อน ปุ่มถึงจะขึ้น ถ้ายังไม่มี แปลว่าเครื่องของบริษัทหรือโรงเรียนอาจล็อกไม่ให้ติดตั้งโปรแกรมเอง ให้ติดตั้งจาก Microsoft Store หรือติดต่อฝ่าย IT</td></tr>
+      <tr><td>ขึ้นหน้าต่าง Files in use</td>
+        <td>DocDee ตัวเก่ายังเปิดอยู่ กด <strong>OK</strong> ให้ตัวติดตั้งปิดให้ แล้วติดตั้งต่อ</td></tr>
+      <tr><td>ขึ้น Setup failed</td>
+        <td>ลองรีสตาร์ทเครื่องแล้วติดตั้งใหม่ ถ้ายังไม่ได้ ถ่ายภาพหน้าจอส่งมาที่<a href="https://m.me/Supakor.Studio">แชทเพจ Facebook</a></td></tr>
+      <tr><td>ไม่อยากติดตั้ง / ไม่มีสิทธิ์ติดตั้ง</td>
+        <td>ใช้ไฟล์ <span class="ui">-portable.zip</span> จาก<a href="https://github.com/supakor-studio/DocDee-releases/releases/latest">หน้าดาวน์โหลด</a> แตกไฟล์แล้วเปิด <span class="ui">DocDee.exe</span> ได้เลย</td></tr>
+      <tr id="faq-hash"><td>อยากตรวจว่าไฟล์เป็นของแท้</td>
+        <td>คลิกขวาที่ปุ่ม Start ▸ เปิด <strong>Terminal</strong> หรือ <strong>PowerShell</strong> แล้วพิมพ์<br>
+          <kbd>Get-FileHash $HOME\Downloads\DocDee-PDF-*.msi</kbd><br>
+          แล้วดูว่าค่า Hash ตรงกับค่า SHA-256 ในหน้ารุ่นบน GitHub ถ้าตรงกันแปลว่าไฟล์ไม่ถูกแก้ไข</td></tr>
+    </table>
+
+    <h2>ติดปัญหาหรือมีคำแนะนำ</h2>
+    <p>แจ้งได้จากเมนู <strong>วิธีใช้ ▸ แจ้งปัญหา…</strong> ในโปรแกรม, <a href="https://m.me/Supakor.Studio">แชทเพจ Facebook</a> หรืออีเมล <a href="mailto:supakor.studio@gmail.com">supakor.studio@gmail.com</a></p>
+    <p class="cap">ภาพหน้าต่างในหน้านี้เป็นภาพจำลอง หน้าจอจริงอาจต่างไปเล็กน้อยตามรุ่นของ Windows</p>
+  </main>
+  <footer class="site"><div class="wrap"><span>© 2026 Supakor.Studio</span><a href="./">กลับหน้าแรก</a></div></footer>
+</body>
+</html>
