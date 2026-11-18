@@ -3,7 +3,7 @@
 The website of Supakor.Studio: https://supakor-studio.github.io
 
 Plain static files served by GitHub Pages: no build step. `index.html` (Thai), the privacy policies
-(`privacy.html` ภาษีแม่ค้า and `privacy-pdf-tools.html` PDF Tools ไทย: linked from Google Play, keep
+(`privacy.html` ภาษีแม่ค้า and `privacy-pdf-tools.html` DocDee PDF for Android, formerly PDF Tools ไทย: linked from Google Play, keep
 their paths; `privacy-docdee.html`), `app-ads.txt` (AdMob, keep at the root),
 `assets/style.css`, `assets/site.js` (card tilt, scroll reveal) and `assets/main.js` (the 3D hero,
 Three.js 0.160.0 from jsDelivr through the import map; the page works without it).

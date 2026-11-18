@@ -309,7 +309,7 @@ function meru() {
 const WORKS = [
   { name: "DocDee PDF · โปรแกรม PDF ภาษาไทย", theme: "it", make: pdfDocument, href: "#docdee" },
   { name: "ซอฟต์แวร์ & IT", theme: "it", make: laptop, href: "#works" },
-  { name: "ภาษีแม่ค้า · PDF Tools ไทย (แอปมือถือ)", theme: "it", make: phone, href: "#works" },
+  { name: "ภาษีแม่ค้า · DocDee PDF (แอปมือถือ)", theme: "it", make: phone, href: "#works" },
   { name: "AetherReel Studio · วิดีโอ AI", theme: "it", make: clapper, href: "#works" },
   { name: "ED GAMER · ช่องเกม", theme: "game", make: gamepad, href: "https://www.youtube.com/@ED._GAMER-SP" },
   { name: "เกมที่กำลังพัฒนา", theme: "game", make: meru, href: "#works" },
