@@ -644,10 +644,12 @@ function meru() {
     sunCorona.material.rotation = t * 0.15;
     const s = 0.54 + Math.sin(t * 3.1) * 0.03;
     sunCorona.scale.set(s, s, 1);
-    // Sun & Moon orbit above the outer ocean rim around Mount Meru
-    const a = t * 0.55;
-    sunGroup.position.set(Math.cos(a) * 0.86, diskY + 0.30, Math.sin(a) * 0.86);
-    moon.position.set(Math.cos(a + Math.PI) * 0.82, diskY + 0.44, Math.sin(a + Math.PI) * 0.82);
+    // Sun & Moon orbit vertically in a full circle (over Mount Meru and under the world layers)
+    const a = t * 0.6;
+    const orbitR = 1.15;
+    const orbitCy = -0.09;
+    sunGroup.position.set(Math.cos(a) * orbitR, orbitCy + Math.sin(a) * orbitR, 0);
+    moon.position.set(Math.cos(a + Math.PI) * orbitR, orbitCy + Math.sin(a + Math.PI) * orbitR, 0);
   };
 
   g.scale.setScalar(0.95);
