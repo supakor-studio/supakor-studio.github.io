@@ -200,107 +200,456 @@ function musicNote() {
 }
 
 function meru() {
-  // Mount Meru as the Traiphum tells it: a stepped square mountain whose four faces are silver
-  // (east), crystal (west), sapphire-green (south) and gold (north), the Tavatimsa palace on its
-  // peak, the sun and moon circling it, standing on the three rocks (Trikut) in the Sithandon
-  // ocean ringed by the seven ranges (Sattaboriphan), with the fires of the underworld below.
+  // World Exterior (โลกภายนอกหอคอย) matched to the Blender 5.2 scene:
+  // flat-faced square pyramid Mount Meru with 4 cardinal colors (north gold, east silver,
+  // south Indranil blue, west crystal), 4-continent world disk with rivers & mini pine forests,
+  // floating tower on the southern rim, inverted rocky root, 3 subterranean element layers
+  // (Fire magma, Water swells, Wind emerald vortex), and realistic boiling Sun with 6-ray
+  // orange corona + cratered Moon.
   const g = new THREE.Group();
-  const faces = {
-    east: mat(0xd9dee8, { metalness: 0.8, roughness: 0.25 }),
-    west: new THREE.MeshStandardMaterial({ color: 0xcfefff, metalness: 0.1, roughness: 0.05, transparent: true, opacity: 0.85, emissive: 0x9fdcff, emissiveIntensity: 0.25 }),
-    south: mat(0x1f9e8a, { metalness: 0.3, roughness: 0.2, ...glow(0x1f9e8a, 0.2) }),
-    north: mat(0xe0b54a, { metalness: 0.85, roughness: 0.22 }),
-    top: mat(0xe8c766, { metalness: 0.7, roughness: 0.3 }),
-  };
-  // BoxGeometry faces: +x, -x, +y, -y, +z, -z.
-  const tierMats = [faces.east, faces.west, faces.top, faces.top, faces.south, faces.north];
 
-  // Underworld fire: a dark basin with flames rising towards the ocean floor.
-  const basin = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.4, 0.12, 24, 1, true), mat(0x2a1210, { roughness: 0.9, side: THREE.DoubleSide }));
-  basin.position.y = -1.22;
-  g.add(basin);
-  const flames = [];
-  for (let k = 0; k < 16; k++) {
-    const a = (k / 16) * Math.PI * 2;
-    const r = 0.12 + (k % 4) * 0.12;
-    const color = [0xff3b1f, 0xff6a1f, 0xff9a2a, 0xffd04a][k % 4];
-    const f = new THREE.Mesh(new THREE.ConeGeometry(0.08 + (k % 3) * 0.03, 0.42, 8), mat(color, { roughness: 0.6, transparent: true, opacity: 0.95, ...glow(color, 2.2) }));
-    f.position.set(Math.cos(a) * r, -1.0, Math.sin(a) * r);
-    g.add(f);
-    flames.push({ f, phase: k * 1.37 });
-  }
-  const fireLight = new THREE.PointLight(0xff6a1f, 2.5, 2.5);
-  fireLight.position.y = -0.95;
-  g.add(fireLight);
-  // The Sithandon ocean and the seven ranges.
-  const sea = new THREE.Mesh(new THREE.CylinderGeometry(0.98, 0.98, 0.07, 48), new THREE.MeshStandardMaterial({ color: 0x1677c8, roughness: 0.12, metalness: 0.35, transparent: true, opacity: 0.8, emissive: 0x0f5aa8, emissiveIntensity: 0.35 }));
-  sea.position.y = -0.7;
-  g.add(sea);
-  const rangeMat = mat(0xb9a37a, { roughness: 0.7 });
-  for (let k = 0; k < 7; k++) {
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.42 + k * 0.08, 0.012, 6, 64), rangeMat);
-    ring.rotation.x = Math.PI / 2;
-    ring.position.y = -0.655;
-    g.add(ring);
-  }
-  // Trikut: three rocks lifting the mountain out of the ocean.
-  const rock = mat(0x7a6d60, { roughness: 0.9 });
-  for (let k = 0; k < 3; k++) {
-    const a = (k / 3) * Math.PI * 2 + Math.PI / 6;
-    const r = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.12, 0.26, 7), rock);
-    r.position.set(Math.cos(a) * 0.18, -0.55, Math.sin(a) * 0.18);
-    g.add(r);
-  }
-  // The mountain: one smooth square pyramid, its top cut flat for the palace. Each side is its
-  // own face, so it takes its direction's colour.
-  const H = 0.78, B = 0.46, T = 0.1;
-  const v = [
-    [-B, 0, B], [B, 0, B], [B, 0, -B], [-B, 0, -B], // foot: front-left, front-right, back-right, back-left
-    [-T, H, T], [T, H, T], [T, H, -T], [-T, H, -T], // top
-  ];
-  const quads = [[0, 1, 5, 4], [1, 2, 6, 5], [2, 3, 7, 6], [3, 0, 4, 7], [4, 5, 6, 7]];
-  const pos = [];
-  const pyramid = new THREE.BufferGeometry();
-  quads.forEach((q, i) => {
-    for (const k of [0, 1, 2, 0, 2, 3]) pos.push(...v[q[k]]);
-    pyramid.addGroup(i * 6, 6, i);
-  });
-  pyramid.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
-  pyramid.computeVertexNormals();
-  // Faces: front (+z) south, right (+x) east, back (-z) north, left (-x) west, then the top.
-  const mountain = new THREE.Mesh(pyramid, [faces.south, faces.east, faces.north, faces.west, faces.top]);
-  mountain.position.y = -0.42;
-  g.add(mountain);
-  let y = -0.42 + H;
-  // Tavatimsa: a small palace with tiered roofs and a spire, glowing gold.
-  const gold = mat(0xf2cf6b, { metalness: 0.85, roughness: 0.2, ...glow(0xf2cf6b, 0.55) });
-  const hall = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.08, 0.16), mat(0xfff4dc, glow(0xffe6a8, 0.4)));
-  hall.position.y = y + 0.04;
-  g.add(hall);
-  let ry = y + 0.09;
-  for (const w of [0.2, 0.15, 0.1]) {
-    const roof = new THREE.Mesh(new THREE.CylinderGeometry(w * 0.35, w * 0.72, 0.05, 4), gold);
-    roof.rotation.y = Math.PI / 4;
-    roof.position.y = ry;
-    g.add(roof);
-    ry += 0.045;
-  }
-  const spire = new THREE.Mesh(new THREE.ConeGeometry(0.025, 0.14, 8), gold);
-  spire.position.y = ry + 0.06;
-  g.add(spire);
-  // The sun and the moon circling the mountain.
-  const sun = new THREE.Mesh(new THREE.SphereGeometry(0.065, 16, 12), mat(0xffb020, glow(0xffb020, 1.6)));
-  const moon = new THREE.Mesh(new THREE.SphereGeometry(0.05, 16, 12), mat(0xdfe8ff, { metalness: 0.4, ...glow(0xbfd0ff, 0.9) }));
-  g.add(sun, moon);
-  g.userData.tick = (t) => {
-    for (const { f, phase } of flames) {
-      const s = 0.75 + Math.sin(t * 9 + phase) * 0.22 + Math.sin(t * 5.3 + phase * 2) * 0.12;
-      f.scale.set(1, s, 1);
-      f.position.y = -1.0 + (s - 1) * 0.2;
+  // --- Procedural stone grain bump texture for Mount Meru faces ---
+  const stoneTex = canvasTexture(256, 256, (c, w, h) => {
+    c.fillStyle = "#808080";
+    c.fillRect(0, 0, w, h);
+    for (let i = 0; i < 1400; i++) {
+      const x = Math.random() * w;
+      const y = Math.random() * h;
+      const r = 1 + Math.random() * 5;
+      const v = 90 + Math.floor(Math.random() * 75);
+      c.fillStyle = `rgba(${v},${v},${v},0.22)`;
+      c.fillRect(x, y, r * 2.2, r * 0.7);
     }
-    sun.position.set(Math.cos(t * 0.8) * 0.62, -0.1, Math.sin(t * 0.8) * 0.62);
-    moon.position.set(Math.cos(t * 0.8 + Math.PI) * 0.62, -0.1, Math.sin(t * 0.8 + Math.PI) * 0.62);
+  });
+  stoneTex.wrapS = stoneTex.wrapT = THREE.RepeatWrapping;
+  stoneTex.repeat.set(2, 3);
+
+  const faces = {
+    north: new THREE.MeshStandardMaterial({ color: 0xd9a63a, metalness: 0.78, roughness: 0.28, bumpMap: stoneTex, bumpScale: 0.015 }),
+    east: new THREE.MeshStandardMaterial({ color: 0xc9ccd2, metalness: 0.82, roughness: 0.22, bumpMap: stoneTex, bumpScale: 0.015 }),
+    south: new THREE.MeshStandardMaterial({ color: 0x2a5fc0, metalness: 0.28, roughness: 0.22, emissive: 0x163880, emissiveIntensity: 0.22, bumpMap: stoneTex, bumpScale: 0.015 }),
+    west: new THREE.MeshStandardMaterial({ color: 0xbfe6f0, metalness: 0.12, roughness: 0.08, transparent: true, opacity: 0.88, emissive: 0x7bcce0, emissiveIntensity: 0.18, bumpMap: stoneTex, bumpScale: 0.01 }),
   };
+
+  const diskY = -0.16;
+  const diskH = 0.078;
+  const diskR = 1.02;
+
+  // --- 1. World Disk Top Surface (4 organic continents, inland lakes, 5 rivers, outer/inner ocean) ---
+  const diskTopTex = canvasTexture(512, 512, (c, w, h) => {
+    const cx = w / 2, cy = h / 2, R = w * 0.5;
+    // Ocean base gradient
+    const ocean = c.createRadialGradient(cx, cy, R * 0.12, cx, cy, R);
+    ocean.addColorStop(0, "#1c7eb0");
+    ocean.addColorStop(0.5, "#15638f");
+    ocean.addColorStop(1, "#0f4d73");
+    c.fillStyle = ocean;
+    c.fillRect(0, 0, w, h);
+
+    // Helper for organic continent wedge
+    function drawContinent(centerAngle, span, innerR, outerR, baseColor, shoreColor, seed) {
+      c.save();
+      c.beginPath();
+      const steps = 40;
+      for (let i = 0; i <= steps; i++) {
+        const u = i / steps;
+        const a = centerAngle - span * 0.5 + u * span;
+        const n = Math.sin(u * 13 + seed) * 0.035 + Math.cos(u * 23 - seed) * 0.02;
+        const rr = (outerR + n * (1 - Math.abs(u - 0.5) * 1.4)) * R;
+        const x = cx + Math.cos(a) * rr, y = cy + Math.sin(a) * rr;
+        i === 0 ? c.moveTo(x, y) : c.lineTo(x, y);
+      }
+      for (let i = steps; i >= 0; i--) {
+        const u = i / steps;
+        const a = centerAngle - span * 0.5 + u * span;
+        const n = Math.cos(u * 11 + seed * 2) * 0.03 + Math.sin(u * 19 + seed) * 0.018;
+        const rr = (innerR + n) * R;
+        c.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr);
+      }
+      c.closePath();
+      c.fillStyle = shoreColor;
+      c.fill();
+      c.lineWidth = 4;
+      c.strokeStyle = "rgba(170, 215, 195, 0.28)";
+      c.stroke();
+
+      // Inner landmass fill
+      c.clip();
+      c.fillStyle = baseColor;
+      c.fillRect(0, 0, w, h);
+
+      // Forest texture blotches
+      for (let k = 0; k < 220; k++) {
+        const a = centerAngle + (Math.random() - 0.5) * span * 0.94;
+        const rr = (innerR + 0.04 + Math.random() * (outerR - innerR - 0.07)) * R;
+        const px = cx + Math.cos(a) * rr;
+        const py = cy + Math.sin(a) * rr;
+        c.fillStyle = k % 3 === 0 ? "rgba(22, 68, 28, 0.55)" : "rgba(56, 108, 44, 0.42)";
+        c.beginPath();
+        c.arc(px, py, 2 + Math.random() * 4.5, 0, Math.PI * 2);
+        c.fill();
+      }
+      c.restore();
+    }
+
+    // Inner land ring around Mount Meru (natural bridges & foothills)
+    drawContinent(0, Math.PI * 2, 0.20, 0.42, "#3f6e33", "#6b8546", 1.1);
+
+    // 4 Cardinal Continents: South (+PI/2), East (0), North (-PI/2), West (PI)
+    drawContinent(Math.PI * 0.5, 1.38, 0.34, 0.90, "#3b7534", "#6e8e49", 2.3);  // South (ชมพูทวีป)
+    drawContinent(0, 1.32, 0.36, 0.88, "#6f7d36", "#9a954a", 4.1);              // East (ปุพพวิเทหทวีป)
+    drawContinent(-Math.PI * 0.5, 1.34, 0.36, 0.89, "#3d7a42", "#6a9154", 6.7); // North (อุตตรกุรุทวีป)
+    drawContinent(Math.PI, 1.32, 0.36, 0.88, "#4c7865", "#769984", 8.9);        // West (อปรโคยานทวีป)
+
+    // Inland lakes + 5 winding rivers connecting inner sea to outer ocean
+    c.strokeStyle = "#1977ad";
+    c.lineCap = "round";
+    for (const [ang, lakeR] of [[Math.PI * 0.5, 0.64], [0, 0.65], [-Math.PI * 0.5, 0.66], [Math.PI, 0.65]]) {
+      const lx = cx + Math.cos(ang) * lakeR * R;
+      const ly = cy + Math.sin(ang) * lakeR * R;
+      c.fillStyle = "#1876ab";
+      c.beginPath();
+      c.ellipse(lx, ly, R * 0.085, R * 0.062, ang, 0, Math.PI * 2);
+      c.fill();
+      // Winding river
+      c.lineWidth = 5;
+      c.beginPath();
+      for (let s = 0; s <= 18; s++) {
+        const u = s / 18;
+        const rr = (0.22 + u * 0.72) * R;
+        const aa = ang + Math.sin(u * Math.PI * 2.5 + ang) * 0.14;
+        const rx = cx + Math.cos(aa) * rr, ry = cy + Math.sin(aa) * rr;
+        s === 0 ? c.moveTo(rx, ry) : c.lineTo(rx, ry);
+      }
+      c.stroke();
+    }
+    // 5th winding river across South-West
+    c.lineWidth = 4.5;
+    c.beginPath();
+    for (let s = 0; s <= 16; s++) {
+      const u = s / 16;
+      const rr = (0.25 + u * 0.68) * R;
+      const aa = Math.PI * 0.72 + Math.sin(u * Math.PI * 2.2) * 0.12;
+      const rx = cx + Math.cos(aa) * rr, ry = cy + Math.sin(aa) * rr;
+      s === 0 ? c.moveTo(rx, ry) : c.lineTo(rx, ry);
+    }
+    c.stroke();
+
+    // Inner blue moat ring around Mount Meru foot
+    c.strokeStyle = "rgba(22, 118, 174, 0.85)";
+    c.lineWidth = 10;
+    c.beginPath();
+    c.arc(cx, cy, R * 0.29, 0, Math.PI * 2);
+    c.stroke();
+  });
+
+  // Stratified rocky cliff side wall of the world disk
+  const cliffTex = canvasTexture(512, 64, (c, w, h) => {
+    const grd = c.createLinearGradient(0, 0, 0, h);
+    grd.addColorStop(0, "#7c6751");
+    grd.addColorStop(0.32, "#594838");
+    grd.addColorStop(0.65, "#6b5642");
+    grd.addColorStop(1, "#3b2e23");
+    c.fillStyle = grd;
+    c.fillRect(0, 0, w, h);
+    for (let i = 0; i < 45; i++) {
+      c.fillStyle = i % 2 === 0 ? "rgba(35,24,16,0.32)" : "rgba(165,140,110,0.22)";
+      c.fillRect(0, Math.random() * h, w, 2 + Math.random() * 4);
+    }
+  });
+  cliffTex.wrapS = THREE.RepeatWrapping;
+  cliffTex.repeat.set(3, 1);
+
+  const diskSideMat = new THREE.MeshStandardMaterial({ map: cliffTex, roughness: 0.88, metalness: 0.05 });
+  const diskTopMat = new THREE.MeshStandardMaterial({ map: diskTopTex, roughness: 0.55, metalness: 0.12 });
+  const diskBotMat = new THREE.MeshStandardMaterial({ color: 0x3a2a1e, roughness: 0.92, metalness: 0.05 });
+  const disk = new THREE.Mesh(
+    new THREE.CylinderGeometry(diskR, diskR * 0.97, diskH, 56),
+    [diskSideMat, diskTopMat, diskBotMat],
+  );
+  disk.position.y = diskY;
+  g.add(disk);
+
+  // Subtle 3D mini pine-forest clusters on the 4 continents (single InstancedMesh draw call)
+  const treeGeo = new THREE.ConeGeometry(0.022, 0.058, 5);
+  const treeMat = new THREE.MeshStandardMaterial({ color: 0x265c29, roughness: 0.85, metalness: 0.05 });
+  const treeCount = 72;
+  const trees = new THREE.InstancedMesh(treeGeo, treeMat, treeCount);
+  const dummy = new THREE.Object3D();
+  for (let i = 0; i < treeCount; i++) {
+    const q = i % 4;
+    const baseA = q * (Math.PI / 2);
+    // Deterministic pseudo-random placement on each continent
+    const h1 = Math.sin(i * 12.9898) * 43758.5453;
+    const r1 = h1 - Math.floor(h1);
+    const h2 = Math.sin(i * 78.233 + 1.7) * 43758.5453;
+    const r2 = h2 - Math.floor(h2);
+    const a = baseA + (r1 - 0.5) * 1.02;
+    const rr = 0.40 + r2 * 0.44;
+    const sc = 0.65 + (i % 5) * 0.16;
+    dummy.position.set(Math.cos(a) * rr, diskY + diskH * 0.5 + 0.025 * sc, Math.sin(a) * rr);
+    dummy.scale.setScalar(sc);
+    dummy.rotation.y = i * 1.1;
+    dummy.updateMatrix();
+    trees.setMatrixAt(i, dummy.matrix);
+  }
+  trees.instanceMatrix.needsUpdate = true;
+  g.add(trees);
+
+  // --- 2. Floating Ancient Tower on the southern edge (ชมพูทวีป) ---
+  const tower = new THREE.Group();
+  const towerStone = mat(0xb8b2a6, { roughness: 0.82, metalness: 0.08 });
+  const towerShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.04, 0.17, 12), towerStone);
+  towerShaft.position.y = 0.085;
+  tower.add(towerShaft);
+  const towerCrown = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.038, 0.026, 12), towerStone);
+  towerCrown.position.y = 0.175;
+  tower.add(towerCrown);
+  const towerMist = new THREE.Mesh(
+    new THREE.SphereGeometry(0.075, 12, 8),
+    new THREE.MeshBasicMaterial({ color: 0xdbeeff, transparent: true, opacity: 0.24, depthWrite: false }),
+  );
+  towerMist.scale.set(1.4, 0.45, 1.4);
+  towerMist.position.y = 0.035;
+  tower.add(towerMist);
+  tower.position.set(0.32, diskY + diskH * 0.5, 0.66);
+  g.add(tower);
+
+  // --- 3. Mount Meru: Sharp Flat-Faced Square Pyramid (edges parallel to X/Z) ---
+  const H = 0.74, B = 0.23;
+  const v = [
+    [-B, 0, B], [B, 0, B], [B, 0, -B], [-B, 0, -B], // base: SW, SE, NE, NW
+    [0, H, 0], // sharp apex
+  ];
+  const tris = [
+    [0, 1, 4], // South (+Z) -> Indranil Blue
+    [1, 2, 4], // East  (+X) -> Silver
+    [2, 3, 4], // North (-Z) -> Gold
+    [3, 0, 4], // West  (-X) -> Crystal
+  ];
+  const pPos = [], pUv = [];
+  const pyramid = new THREE.BufferGeometry();
+  tris.forEach((t, i) => {
+    pPos.push(...v[t[0]], ...v[t[1]], ...v[t[2]]);
+    pUv.push(0, 0, 1, 0, 0.5, 1);
+    pyramid.addGroup(i * 3, 3, i);
+  });
+  pyramid.setAttribute("position", new THREE.Float32BufferAttribute(pPos, 3));
+  pyramid.setAttribute("uv", new THREE.Float32BufferAttribute(pUv, 2));
+  pyramid.computeVertexNormals();
+  const mountain = new THREE.Mesh(pyramid, [faces.south, faces.east, faces.north, faces.west]);
+  mountain.position.y = diskY + diskH * 0.5 - 0.01;
+  g.add(mountain);
+
+  // Inverted square root + floating-island rocky fangs below the world disk
+  const rootMat = new THREE.MeshStandardMaterial({ color: 0x4b3f35, roughness: 0.92, metalness: 0.08 });
+  const rootCone = new THREE.Mesh(new THREE.ConeGeometry(B * 1.12, 0.60, 4), rootMat);
+  rootCone.rotation.set(Math.PI, Math.PI / 4, 0);
+  rootCone.position.y = diskY - diskH * 0.5 - 0.29;
+  g.add(rootCone);
+  for (let k = 0; k < 10; k++) {
+    const a = (k / 10) * Math.PI * 2;
+    const rad = 0.22 + (k % 2) * 0.09;
+    const fh = 0.14 + (k % 3) * 0.06;
+    const fang = new THREE.Mesh(new THREE.ConeGeometry(0.055, fh, 5), rootMat);
+    fang.rotation.x = Math.PI;
+    fang.position.set(Math.cos(a) * rad, diskY - diskH * 0.5 - fh * 0.45, Math.sin(a) * rad);
+    g.add(fang);
+  }
+
+  // --- 4. Three Subterranean Element Layers: Fire, Water, Wind ---
+  // Layer 1: Fire / Molten Magma Crust (R = 0.93)
+  const magmaTex = canvasTexture(512, 128, (c, w, h) => {
+    c.fillStyle = "#1b0b08";
+    c.fillRect(0, 0, w, h);
+    for (let i = 0; i < 65; i++) {
+      const x = Math.random() * w, y = Math.random() * h;
+      const rad = 12 + Math.random() * 34;
+      const grd = c.createRadialGradient(x, y, 1, x, y, rad);
+      grd.addColorStop(0, "rgba(255, 224, 102, 0.95)");
+      grd.addColorStop(0.35, "rgba(255, 118, 28, 0.85)");
+      grd.addColorStop(0.7, "rgba(190, 38, 12, 0.45)");
+      grd.addColorStop(1, "rgba(27, 11, 8, 0)");
+      c.fillStyle = grd;
+      c.fillRect(x - rad, y - rad, rad * 2, rad * 2);
+    }
+  });
+  magmaTex.wrapS = magmaTex.wrapT = THREE.RepeatWrapping;
+  const fireMat = new THREE.MeshBasicMaterial({ map: magmaTex });
+  const fireLayer = new THREE.Mesh(new THREE.CylinderGeometry(0.93, 0.91, 0.072, 48), fireMat);
+  fireLayer.position.y = diskY - 0.15;
+  g.add(fireLayer);
+
+  const fireLight = new THREE.PointLight(0xff6a1f, 2.2, 2.4);
+  fireLight.position.y = diskY - 0.16;
+  g.add(fireLight);
+
+  // Layer 2: Water Swells (R = 0.84)
+  const waterTex = canvasTexture(256, 256, (c, w, h) => {
+    const grd = c.createRadialGradient(w / 2, h / 2, 10, w / 2, h / 2, w / 2);
+    grd.addColorStop(0, "#1c7dc4");
+    grd.addColorStop(0.7, "#115896");
+    grd.addColorStop(1, "#2a96d6");
+    c.fillStyle = grd;
+    c.fillRect(0, 0, w, h);
+    c.strokeStyle = "rgba(190, 235, 255, 0.35)";
+    c.lineWidth = 2;
+    for (let i = 0; i < 14; i++) {
+      c.beginPath();
+      c.arc(w / 2, h / 2, 18 + i * 9, i * 0.5, i * 0.5 + 3.4);
+      c.stroke();
+    }
+  });
+  const waterLayer = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.84, 0.82, 0.056, 48),
+    new THREE.MeshStandardMaterial({
+      map: waterTex,
+      color: 0x38a5e8,
+      roughness: 0.14,
+      metalness: 0.3,
+      transparent: true,
+      opacity: 0.84,
+      emissive: 0x0e4f8c,
+      emissiveIntensity: 0.32,
+    }),
+  );
+  waterLayer.position.y = diskY - 0.285;
+  g.add(waterLayer);
+
+  // Layer 3: Wind Emerald Storm Cloud Vortex (R = 0.76)
+  const windTex = canvasTexture(256, 256, (c, w, h) => {
+    const cx = w / 2, cy = h / 2;
+    const grd = c.createRadialGradient(cx, cy, 8, cx, cy, w * 0.48);
+    grd.addColorStop(0, "rgba(150, 255, 232, 0.85)");
+    grd.addColorStop(0.55, "rgba(72, 224, 194, 0.65)");
+    grd.addColorStop(0.85, "rgba(42, 180, 158, 0.25)");
+    grd.addColorStop(1, "rgba(42, 180, 158, 0)");
+    c.fillStyle = grd;
+    c.fillRect(0, 0, w, h);
+    c.strokeStyle = "rgba(210, 255, 245, 0.45)";
+    c.lineWidth = 3;
+    for (let k = 0; k < 6; k++) {
+      c.beginPath();
+      for (let s = 0; s < 30; s++) {
+        const u = s / 29;
+        const a = k * (Math.PI / 3) + u * 2.4;
+        const rr = (0.12 + u * 0.34) * w;
+        const px = cx + Math.cos(a) * rr, py = cy + Math.sin(a) * rr;
+        s === 0 ? c.moveTo(px, py) : c.lineTo(px, py);
+      }
+      c.stroke();
+    }
+  });
+  const windMat = new THREE.MeshBasicMaterial({
+    map: windTex,
+    transparent: true,
+    opacity: 0.78,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+  });
+  const windLayer = new THREE.Group();
+  for (let i = 0; i < 3; i++) {
+    const disc = new THREE.Mesh(new THREE.CircleGeometry(0.76 - i * 0.04, 40), windMat);
+    disc.rotation.x = -Math.PI / 2;
+    disc.position.y = (i - 1) * 0.022;
+    windLayer.add(disc);
+  }
+  windLayer.position.y = diskY - 0.42;
+  g.add(windLayer);
+
+  // --- 5. Realistic Boiling Sun (crimson-orange photosphere + volumetric corona + 6-ray flare) & Moon ---
+  const sunTex = canvasTexture(256, 128, (c, w, h) => {
+    const grd = c.createLinearGradient(0, 0, 0, h);
+    grd.addColorStop(0, "#ff5524");
+    grd.addColorStop(0.5, "#ff3b2f");
+    grd.addColorStop(1, "#ff7828");
+    c.fillStyle = grd;
+    c.fillRect(0, 0, w, h);
+    for (let i = 0; i < 240; i++) {
+      c.fillStyle = i % 3 === 0 ? "rgba(255, 210, 110, 0.42)" : "rgba(180, 24, 14, 0.34)";
+      c.beginPath();
+      c.arc(Math.random() * w, Math.random() * h, 2 + Math.random() * 6, 0, Math.PI * 2);
+      c.fill();
+    }
+  });
+  const sunGroup = new THREE.Group();
+  const sunCore = new THREE.Mesh(new THREE.SphereGeometry(0.095, 20, 16), new THREE.MeshBasicMaterial({ map: sunTex }));
+  sunGroup.add(sunCore);
+
+  // Translucent 6-rayed orange solar corona sprite (matches Blender Mat_Sun_CoronaRays6)
+  const corona6Tex = canvasTexture(256, 256, (c, w, h) => {
+    const cx = w / 2, cy = h / 2;
+    const halo = c.createRadialGradient(cx, cy, w * 0.08, cx, cy, w * 0.48);
+    halo.addColorStop(0, "rgba(255, 210, 140, 0.95)");
+    halo.addColorStop(0.28, "rgba(255, 138, 42, 0.68)");
+    halo.addColorStop(0.6, "rgba(255, 72, 26, 0.22)");
+    halo.addColorStop(1, "rgba(255, 59, 47, 0)");
+    c.fillStyle = halo;
+    c.fillRect(0, 0, w, h);
+
+    // 6 soft fiery solar flare rays
+    for (let k = 0; k < 6; k++) {
+      c.save();
+      c.translate(cx, cy);
+      c.rotate((k * Math.PI) / 3);
+      const rg = c.createLinearGradient(0, 0, w * 0.48, 0);
+      rg.addColorStop(0, "rgba(255, 196, 110, 0.88)");
+      rg.addColorStop(0.42, "rgba(255, 128, 36, 0.48)");
+      rg.addColorStop(1, "rgba(255, 60, 24, 0)");
+      c.fillStyle = rg;
+      c.beginPath();
+      c.moveTo(0, -16);
+      c.lineTo(w * 0.48, 0);
+      c.lineTo(0, 16);
+      c.closePath();
+      c.fill();
+      c.restore();
+    }
+  });
+  const sunCorona = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: corona6Tex,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    transparent: true,
+  }));
+  sunCorona.scale.set(0.56, 0.56, 1);
+  sunGroup.add(sunCorona);
+  g.add(sunGroup);
+
+  // Cratered Moon
+  const moonTex = canvasTexture(128, 128, (c, w, h) => {
+    c.fillStyle = "#e6ecf7";
+    c.fillRect(0, 0, w, h);
+    for (let i = 0; i < 24; i++) {
+      c.fillStyle = "rgba(145, 160, 185, 0.35)";
+      c.beginPath();
+      c.arc(Math.random() * w, Math.random() * h, 3 + Math.random() * 9, 0, Math.PI * 2);
+      c.fill();
+    }
+  });
+  const moon = new THREE.Mesh(
+    new THREE.SphereGeometry(0.062, 16, 12),
+    new THREE.MeshStandardMaterial({ map: moonTex, roughness: 0.7, metalness: 0.1, emissive: 0xbfd4ff, emissiveIntensity: 0.55 }),
+  );
+  g.add(moon);
+
+  g.userData.tick = (t) => {
+    // Subtle magma pulse & wind vortex rotation
+    fireLight.intensity = 1.9 + Math.sin(t * 4.2) * 0.35;
+    magmaTex.offset.x = t * 0.02;
+    waterLayer.rotation.y = t * 0.08;
+    windLayer.rotation.y = -t * 0.35;
+    sunCore.rotation.y = t * 0.4;
+    sunCorona.material.rotation = t * 0.15;
+    const s = 0.54 + Math.sin(t * 3.1) * 0.03;
+    sunCorona.scale.set(s, s, 1);
+    // Sun & Moon orbit above the outer ocean rim around Mount Meru
+    const a = t * 0.55;
+    sunGroup.position.set(Math.cos(a) * 0.86, diskY + 0.30, Math.sin(a) * 0.86);
+    moon.position.set(Math.cos(a + Math.PI) * 0.82, diskY + 0.44, Math.sin(a + Math.PI) * 0.82);
+  };
+
   g.scale.setScalar(0.95);
   return g;
 }
